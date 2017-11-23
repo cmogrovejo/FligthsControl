@@ -1,0 +1,773 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
+
+-- Started on 2017-11-20 23:24:21 BOT
+
+DROP DATABASE "ViajesPersonal";
+--
+-- TOC entry 2495 (class 1262 OID 16627)
+-- Name: ViajesPersonal; Type: DATABASE; Schema: -;
+--
+
+CREATE DATABASE "ViajesPersonal" WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
+
+\connect "ViajesPersonal"
+
+--
+-- TOC entry 2496 (class 1262 OID 16627)
+-- Dependencies: 2495
+-- Name: ViajesPersonal; Type: COMMENT; Schema: -;
+--
+
+COMMENT ON DATABASE "ViajesPersonal" IS 'Base de Datos de viajes del personal';
+
+--
+-- TOC entry 1 (class 3079 OID 12655)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+--
+-- TOC entry 2498 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 192 (class 1259 OID 24845)
+-- Name: Airline; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Airline" (
+    airline_id integer NOT NULL,
+    airline_name character varying(150) NOT NULL,
+    airline_description character varying(200),
+    airline_active boolean NOT NULL,
+    "airline_creationDate" timestamp without time zone NOT NULL,
+    "airline_creationUser" character varying(50) NOT NULL,
+    "airline_modificationDate" timestamp without time zone,
+    "airline_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2499 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: TABLE "Airline"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Airline" IS 'Contains all data for airlines';
+
+--
+-- TOC entry 191 (class 1259 OID 24843)
+-- Name: Airline_airline_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "Airline_airline_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2500 (class 0 OID 0)
+-- Dependencies: 191
+-- Name: Airline_airline_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "Airline_airline_id_seq" OWNED BY "Airline".airline_id;
+
+--
+-- TOC entry 188 (class 1259 OID 24829)
+-- Name: Area; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Area" (
+    area_id integer NOT NULL,
+    area_name character varying(100) NOT NULL,
+    area_description character varying(200),
+    "area_creationDate" timestamp without time zone NOT NULL,
+    "area_creationUser" character varying(50) NOT NULL,
+    "area_modificationDate" timestamp without time zone,
+    "area_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2501 (class 0 OID 0)
+-- Dependencies: 188
+-- Name: TABLE "Area"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Area" IS 'Area of the user';
+
+--
+-- TOC entry 187 (class 1259 OID 24827)
+-- Name: Area_area_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "Area_area_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2502 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: Area_area_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "Area_area_id_seq" OWNED BY "Area".area_id;
+
+--
+-- TOC entry 198 (class 1259 OID 24882)
+-- Name: City; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "City" (
+    city_id integer NOT NULL,
+    country_id integer NOT NULL,
+    city_name character varying(200) NOT NULL,
+    city_acronym character varying(3) NOT NULL,
+    "city_creationDate" timestamp without time zone NOT NULL,
+    "city_creationUser" character varying(50) NOT NULL,
+    "city_modificationDate" timestamp without time zone,
+    "city_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2503 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: TABLE "City"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "City" IS 'Contains all cities for countries in system';
+
+--
+-- TOC entry 202 (class 1259 OID 24936)
+-- Name: City_Flight; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "City_Flight" (
+    city_id integer NOT NULL,
+    flight_id integer NOT NULL,
+    departure_arrival bit(1) NOT NULL
+);
+
+--
+-- TOC entry 2504 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: TABLE "City_Flight"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "City_Flight" IS 'Contains the data between relation of City and Flight';
+
+--
+-- TOC entry 205 (class 1259 OID 24969)
+-- Name: City_Stopover; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "City_Stopover" (
+    city_id integer NOT NULL,
+    stopover_id integer NOT NULL,
+    departure_arrival bit(1) NOT NULL
+);
+
+--
+-- TOC entry 2505 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: TABLE "City_Stopover"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "City_Stopover" IS 'Contains all data for n to n relation between City and Atopover';
+
+--
+-- TOC entry 197 (class 1259 OID 24880)
+-- Name: City_city_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "City_city_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+--
+-- TOC entry 2506 (class 0 OID 0)
+-- Dependencies: 197
+-- Name: City_city_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "City_city_id_seq" OWNED BY "City".city_id;
+
+--
+-- TOC entry 194 (class 1259 OID 24853)
+-- Name: Country; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Country" (
+    country_id integer NOT NULL,
+    country_name character varying(150) NOT NULL,
+    country_acronym character varying(3) NOT NULL,
+    "country_creationDate" timestamp without time zone NOT NULL,
+    "country_creationUser" character varying(50) NOT NULL,
+    "country_modificationDate" timestamp without time zone,
+    "country_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2507 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: TABLE "Country"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Country" IS 'Contains all Countries for flight records';
+
+--
+-- TOC entry 193 (class 1259 OID 24851)
+-- Name: Country_country_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "Country_country_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2508 (class 0 OID 0)
+-- Dependencies: 193
+-- Name: Country_country_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "Country_country_id_seq" OWNED BY "Country".country_id;
+
+--
+-- TOC entry 200 (class 1259 OID 24906)
+-- Name: Flight; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Flight" (
+    flight_id integer NOT NULL,
+    user_id integer NOT NULL,
+    user_account character varying(50) NOT NULL,
+    flight_cost numeric(5,2) NOT NULL,
+    "flight_extOrInt" bit(1) NOT NULL,
+    flight_reason character varying(100) NOT NULL,
+    flight_observation character varying(250),
+    "flight_jobOrPer" bit(1) NOT NULL,
+    "flight_departureDate" date NOT NULL,
+    "flight_arrivalDate" date NOT NULL,
+    "flight_creationDate" timestamp without time zone NOT NULL,
+    "flight_creationUser" character varying(50) NOT NULL,
+    "flight_modificationDate" timestamp without time zone,
+    "flight_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2509 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: TABLE "Flight"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Flight" IS 'Contains the flight data';
+
+
+--
+-- TOC entry 199 (class 1259 OID 24904)
+-- Name: Flight_flight_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "Flight_flight_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2510 (class 0 OID 0)
+-- Dependencies: 199
+-- Name: Flight_flight_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "Flight_flight_id_seq" OWNED BY "Flight".flight_id;
+
+--
+-- TOC entry 186 (class 1259 OID 24821)
+-- Name: Profile; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Profile" (
+    profile_id integer NOT NULL,
+    profile_name character varying(100) NOT NULL,
+    profile_description character varying(200),
+    "profile_creationDate" timestamp without time zone NOT NULL,
+    "profile_creationUser" character varying(50) NOT NULL,
+    "profile_modificationDate" timestamp without time zone,
+    "profile_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2511 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: TABLE "Profile"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Profile" IS 'Data for the user''s profiles';
+
+
+--
+-- TOC entry 185 (class 1259 OID 24819)
+-- Name: Profile_profile_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "Profile_profile_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2512 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: Profile_profile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "Profile_profile_id_seq" OWNED BY "Profile".profile_id;
+
+--
+-- TOC entry 190 (class 1259 OID 24837)
+-- Name: Status; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Status" (
+    status_id integer NOT NULL,
+    status_name character varying(200) NOT NULL,
+    status_group integer NOT NULL,
+    "status_creationDate" timestamp without time zone NOT NULL,
+    "status_creationUser" character varying(50) NOT NULL,
+    "status_modificationDate" timestamp without time zone,
+    "status_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2513 (class 0 OID 0)
+-- Dependencies: 190
+-- Name: TABLE "Status"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Status" IS 'Contains all of possible values for status';
+
+--
+-- TOC entry 201 (class 1259 OID 24920)
+-- Name: Status_Flight; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Status_Flight" (
+    staus_id integer NOT NULL,
+    flight_id integer NOT NULL
+);
+
+--
+-- TOC entry 2514 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: TABLE "Status_Flight"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Status_Flight" IS 'Contains the m to m relation between Status and Flight';
+
+--
+-- TOC entry 189 (class 1259 OID 24835)
+-- Name: Status_status_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "Status_status_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2515 (class 0 OID 0)
+-- Dependencies: 189
+-- Name: Status_status_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "Status_status_id_seq" OWNED BY "Status".status_id;
+
+--
+-- TOC entry 204 (class 1259 OID 24953)
+-- Name: Stopover; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "Stopover" (
+    stopover_id integer NOT NULL,
+    airline_id integer NOT NULL,
+    flight_id integer NOT NULL,
+    "stopover_departureDate" date NOT NULL,
+    "stopover_departureHour" time without time zone NOT NULL,
+    "stopover_arrivalDate" date NOT NULL,
+    "stopover_arrivalHour" time without time zone NOT NULL,
+    "stopover_fligthNumber" character varying(50) NOT NULL,
+    "stopover_creationDate" timestamp without time zone NOT NULL,
+    "stopover_creationUser" character varying(50) NOT NULL,
+    "stopover_modificationDate" timestamp without time zone,
+    "stopover_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2516 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: TABLE "Stopover"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "Stopover" IS 'Contains all stopovers from flights of users';
+
+--
+-- TOC entry 203 (class 1259 OID 24951)
+-- Name: Stopover_stopover_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "Stopover_stopover_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2517 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: Stopover_stopover_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "Stopover_stopover_id_seq" OWNED BY "Stopover".stopover_id;
+
+--
+-- TOC entry 196 (class 1259 OID 24861)
+-- Name: User; Type: TABLE; Schema: public; 
+--
+
+CREATE TABLE "User" (
+    user_id integer NOT NULL,
+    user_account character varying(50) NOT NULL,
+    profile_id integer NOT NULL,
+    area_id integer NOT NULL,
+    "user_firstName" character varying(150) NOT NULL,
+    "user_lastName" character varying(150) NOT NULL,
+    user_password character varying(50) NOT NULL,
+    user_active boolean NOT NULL,
+    "user_creationDate" timestamp without time zone NOT NULL,
+    "user_creationUser" character varying(50) NOT NULL,
+    "user_modificationDate" timestamp without time zone,
+    "user_modificationUser" character varying(50)
+);
+
+--
+-- TOC entry 2518 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: TABLE "User"; Type: COMMENT; Schema: public; 
+--
+
+COMMENT ON TABLE "User" IS 'Contains all of users for the system';
+
+--
+-- TOC entry 195 (class 1259 OID 24859)
+-- Name: User_user_id_seq; Type: SEQUENCE; Schema: public; 
+--
+
+CREATE SEQUENCE "User_user_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+--
+-- TOC entry 2519 (class 0 OID 0)
+-- Dependencies: 195
+-- Name: User_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; 
+--
+
+ALTER SEQUENCE "User_user_id_seq" OWNED BY "User".user_id;
+
+--
+-- TOC entry 2332 (class 2604 OID 24848)
+-- Name: Airline airline_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Airline" ALTER COLUMN airline_id SET DEFAULT nextval('"Airline_airline_id_seq"'::regclass);
+
+--
+-- TOC entry 2330 (class 2604 OID 24832)
+-- Name: Area area_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Area" ALTER COLUMN area_id SET DEFAULT nextval('"Area_area_id_seq"'::regclass);
+
+--
+-- TOC entry 2335 (class 2604 OID 24885)
+-- Name: City city_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City" ALTER COLUMN city_id SET DEFAULT nextval('"City_city_id_seq"'::regclass);
+
+--
+-- TOC entry 2333 (class 2604 OID 24856)
+-- Name: Country country_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Country" ALTER COLUMN country_id SET DEFAULT nextval('"Country_country_id_seq"'::regclass);
+
+--
+-- TOC entry 2336 (class 2604 OID 24909)
+-- Name: Flight flight_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Flight" ALTER COLUMN flight_id SET DEFAULT nextval('"Flight_flight_id_seq"'::regclass);
+
+--
+-- TOC entry 2329 (class 2604 OID 24824)
+-- Name: Profile profile_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Profile" ALTER COLUMN profile_id SET DEFAULT nextval('"Profile_profile_id_seq"'::regclass);
+
+--
+-- TOC entry 2331 (class 2604 OID 24840)
+-- Name: Status status_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Status" ALTER COLUMN status_id SET DEFAULT nextval('"Status_status_id_seq"'::regclass);
+
+
+--
+-- TOC entry 2337 (class 2604 OID 24956)
+-- Name: Stopover stopover_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Stopover" ALTER COLUMN stopover_id SET DEFAULT nextval('"Stopover_stopover_id_seq"'::regclass);
+
+--
+-- TOC entry 2334 (class 2604 OID 24864)
+-- Name: User user_id; Type: DEFAULT; Schema: public; 
+--
+
+ALTER TABLE ONLY "User" ALTER COLUMN user_id SET DEFAULT nextval('"User_user_id_seq"'::regclass);
+
+--
+-- TOC entry 2345 (class 2606 OID 24850)
+-- Name: Airline Airline_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Airline"
+    ADD CONSTRAINT "Airline_pkey" PRIMARY KEY (airline_id);
+
+--
+-- TOC entry 2341 (class 2606 OID 24834)
+-- Name: Area Area_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Area"
+    ADD CONSTRAINT "Area_pkey" PRIMARY KEY (area_id);
+
+--
+-- TOC entry 2361 (class 2606 OID 24973)
+-- Name: City_Stopover City_Stopover_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City_Stopover"
+    ADD CONSTRAINT "City_Stopover_pkey" PRIMARY KEY (city_id, stopover_id);
+
+--
+-- TOC entry 2351 (class 2606 OID 24887)
+-- Name: City City_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City"
+    ADD CONSTRAINT "City_pkey" PRIMARY KEY (city_id);
+
+--
+-- TOC entry 2347 (class 2606 OID 24858)
+-- Name: Country Country_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Country"
+    ADD CONSTRAINT "Country_pkey" PRIMARY KEY (country_id);
+
+--
+-- TOC entry 2353 (class 2606 OID 24914)
+-- Name: Flight Flight_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Flight"
+    ADD CONSTRAINT "Flight_pkey" PRIMARY KEY (flight_id);
+
+--
+-- TOC entry 2339 (class 2606 OID 24826)
+-- Name: Profile Profile_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Profile"
+    ADD CONSTRAINT "Profile_pkey" PRIMARY KEY (profile_id);
+
+--
+-- TOC entry 2355 (class 2606 OID 24924)
+-- Name: Status_Flight Status_Flight_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Status_Flight"
+    ADD CONSTRAINT "Status_Flight_pkey" PRIMARY KEY (staus_id, flight_id);
+
+--
+-- TOC entry 2343 (class 2606 OID 24842)
+-- Name: Status Status_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Status"
+    ADD CONSTRAINT "Status_pkey" PRIMARY KEY (status_id);
+
+--
+-- TOC entry 2359 (class 2606 OID 24958)
+-- Name: Stopover Stopover_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Stopover"
+    ADD CONSTRAINT "Stopover_pkey" PRIMARY KEY (stopover_id);
+
+--
+-- TOC entry 2349 (class 2606 OID 24869)
+-- Name: User User_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY (user_id, user_account);
+
+--
+-- TOC entry 2357 (class 2606 OID 24940)
+-- Name: City_Flight city_flight_pkey; Type: CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City_Flight"
+    ADD CONSTRAINT city_flight_pkey PRIMARY KEY (city_id, flight_id);
+
+--
+-- TOC entry 2371 (class 2606 OID 24964)
+-- Name: Stopover fk_airline_stopover; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Stopover"
+    ADD CONSTRAINT fk_airline_stopover FOREIGN KEY (airline_id) REFERENCES "Airline"(airline_id);
+
+--
+-- TOC entry 2363 (class 2606 OID 24875)
+-- Name: User fk_area_user; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "User"
+    ADD CONSTRAINT fk_area_user FOREIGN KEY (area_id) REFERENCES "Area"(area_id);
+
+--
+-- TOC entry 2364 (class 2606 OID 24888)
+-- Name: City fk_city_country; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City"
+    ADD CONSTRAINT fk_city_country FOREIGN KEY (country_id) REFERENCES "Country"(country_id);
+
+--
+-- TOC entry 2372 (class 2606 OID 24974)
+-- Name: City_Stopover fk_city_stopover1; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City_Stopover"
+    ADD CONSTRAINT fk_city_stopover1 FOREIGN KEY (city_id) REFERENCES "City"(city_id);
+
+--
+-- TOC entry 2373 (class 2606 OID 24979)
+-- Name: City_Stopover fk_city_stopover2; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City_Stopover"
+    ADD CONSTRAINT fk_city_stopover2 FOREIGN KEY (stopover_id) REFERENCES "Stopover"(stopover_id);
+
+--
+-- TOC entry 2368 (class 2606 OID 24941)
+-- Name: City_Flight fk_flight_city1; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City_Flight"
+    ADD CONSTRAINT fk_flight_city1 FOREIGN KEY (city_id) REFERENCES "City"(city_id);
+
+--
+-- TOC entry 2369 (class 2606 OID 24946)
+-- Name: City_Flight fk_flight_city2; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "City_Flight"
+    ADD CONSTRAINT fk_flight_city2 FOREIGN KEY (flight_id) REFERENCES "Flight"(flight_id);
+
+--
+-- TOC entry 2370 (class 2606 OID 24959)
+-- Name: Stopover fk_flight_stopover; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Stopover"
+    ADD CONSTRAINT fk_flight_stopover FOREIGN KEY (flight_id) REFERENCES "Flight"(flight_id);
+
+--
+-- TOC entry 2362 (class 2606 OID 24870)
+-- Name: User fk_profile_user; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "User"
+    ADD CONSTRAINT fk_profile_user FOREIGN KEY (profile_id) REFERENCES "Profile"(profile_id);
+
+--
+-- TOC entry 2366 (class 2606 OID 24925)
+-- Name: Status_Flight fk_status_flight1; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Status_Flight"
+    ADD CONSTRAINT fk_status_flight1 FOREIGN KEY (staus_id) REFERENCES "Status"(status_id);
+
+--
+-- TOC entry 2367 (class 2606 OID 24930)
+-- Name: Status_Flight fk_status_flight2; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Status_Flight"
+    ADD CONSTRAINT fk_status_flight2 FOREIGN KEY (flight_id) REFERENCES "Flight"(flight_id);
+
+--
+-- TOC entry 2365 (class 2606 OID 24915)
+-- Name: Flight fk_user_flight; Type: FK CONSTRAINT; Schema: public; 
+--
+
+ALTER TABLE ONLY "Flight"
+    ADD CONSTRAINT fk_user_flight FOREIGN KEY (user_id, user_account) REFERENCES "User"(user_id, user_account);
+
+
+-- Completed on 2017-11-20 23:24:21 BOT
+
+--
+-- PostgreSQL database dump complete
+--
